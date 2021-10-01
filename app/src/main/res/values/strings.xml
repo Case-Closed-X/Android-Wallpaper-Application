@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">wallpaper</string>
+    <string name="setWallpaper">设置壁纸</string>
+
+    <string name="wallpaper">壁纸</string>
+
+    <string name="about">关于</string>
+    <string name="version">version 1.0</string>
+
+    <string name="about_shortcut_short_label">关于</string>
+    <string name="about_shortcut_long_label">关于界面</string>
+    <string name="about_disabled_message">调试中，暂时停用</string>
+</resources>
