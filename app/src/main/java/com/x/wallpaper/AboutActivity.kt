@@ -7,10 +7,8 @@ import android.net.Uri
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.transition.Fade
 import android.transition.Slide
 import android.view.*
-import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.RequiresApi
@@ -18,9 +16,25 @@ import androidx.cardview.widget.CardView
 import androidx.constraintlayout.utils.widget.ImageFilterView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.StaggeredGridLayoutManager
-import com.x.wallpaper.Utils.animateScale
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import com.x.wallpaper.databinding.ActivityAboutBinding
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.Response
+import okio.IOException
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.http.GET
+import java.io.BufferedReader
+import java.io.InputStreamReader
+import java.lang.Exception
+import java.lang.StringBuilder
+import java.net.URL
+import javax.net.ssl.HttpsURLConnection
+import kotlin.concurrent.thread
 
 @RequiresApi(Build.VERSION_CODES.R)
 class AboutActivity : AppCompatActivity() {
@@ -34,9 +48,9 @@ class AboutActivity : AppCompatActivity() {
     }
 
     private fun initData() {
-        aboutList.add(AboutItem(R.drawable.ico_github,"github","访问我的github项目页"))
-        aboutList.add(AboutItem(R.drawable.ico_outlook,"outlook mail","给我的outlook邮箱发送邮件"))
-        aboutList.add(AboutItem(R.drawable.ico_qq,"qq mail","联系我的qq邮箱"))
+        aboutList.add(AboutItem(R.drawable.ico_github,"开源项目","访问我的Github项目页"))
+        aboutList.add(AboutItem(R.drawable.ico_outlook,"联系作者","给我的Outlook邮箱发送邮件"))
+        aboutList.add(AboutItem(R.drawable.ico_qq,"个人主页","访问我的个人网站"))
 
         firstList.add(AboutItem(R.drawable.ico_version,"关于","APP Version 1.0"))
     }
@@ -113,7 +127,7 @@ class AboutAdapter(private val aboutList : List<AboutItem>,private val isAbout :
         val urlGithub =
             "https://github.com/Case-Closed-X/Android-Wallpaper-Application"
         val urlOutlook = "mailto:CaseClosedX@outlook.com"
-        val urlQQ = "mailto:CaseClosedX@qq.com"
+        val urlHomePage = "https://case-closed-x.github.io/"
 
         val view = LayoutInflater.from(parent.context).inflate(R.layout.about_item,parent,false)
 
@@ -124,7 +138,7 @@ class AboutAdapter(private val aboutList : List<AboutItem>,private val isAbout :
                 val intent = Intent(Intent.ACTION_VIEW, Uri.parse(when(position){
                     0-> urlGithub
                     1-> urlOutlook
-                    2-> urlQQ
+                    2-> urlHomePage
                     else -> null
                 }))
                 when (event.action) {
@@ -139,8 +153,9 @@ class AboutAdapter(private val aboutList : List<AboutItem>,private val isAbout :
                         if (isAbout){
                             parent.context.startActivity(intent)
                         }
-                        else if (position == 0){//后续会优化
-                            Toast.makeText(parent.context,"已经是最新版本", Toast.LENGTH_SHORT).show()
+                        else if (position == 0){// 使用网络获取版本，可以设置flag获取时无效点击
+                            // 获取成功打开github下载页面或者弹出对话框，直接创建下载任务
+                            retrofit()
                         }
                     }
                 }
@@ -149,6 +164,89 @@ class AboutAdapter(private val aboutList : List<AboutItem>,private val isAbout :
 
         return viewHolder
     }
+
+    private fun retrofit() {
+        val versionService = ServiceCreator.create<VersionService>()
+        versionService.getVersionData().enqueue(object : Callback<List<AppVersion>>{
+            override fun onResponse(
+                call: Call<List<AppVersion>>,
+                response: retrofit2.Response<List<AppVersion>>
+            ) {
+                val list = response.body()
+                if (list!=null){
+                    for (version in list){
+                        if (version.version == "1.0") {
+                            Toast.makeText(MyApplication.context, "已经是最新版本", Toast.LENGTH_SHORT)
+                                .show()
+                        }
+                        else{
+                            Toast.makeText(MyApplication.context, "有新版本更新", Toast.LENGTH_SHORT)
+                                .show()
+                            val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/Case-Closed-X/Android-Wallpaper-Application/releases/"))
+                            MyApplication.context.startActivity(intent)
+                        }
+                    }
+                }
+            }
+
+            override fun onFailure(call: Call<List<AppVersion>>, t: Throwable) {
+                t.printStackTrace()
+                Toast.makeText(MyApplication.context, "获取更新超时，请检查网络连接", Toast.LENGTH_SHORT)
+                    .show()
+            }
+        })
+
+    }
+
+/*    private fun okHttp() {
+        thread {
+            try {
+                val client = OkHttpClient()
+
+                val request = Request.Builder()
+                    .url("https://case-closed-x.github.io/Json/wallpaper_version.json")
+                    .build()
+                val response = client.newCall(request).execute()
+                val responseData = response.body?.string()
+                if (responseData!=null){
+                    parseJSONWithGSON(responseData)
+                }
+            }catch (e:Exception){
+                e.printStackTrace()
+            }
+        }
+    }*/
+
+/*    private fun parseJSONWithGSON(jsonData: String) {
+        val gson = Gson()
+        val typeOf = object : TypeToken<List<AppVersion>>() {}.type
+        val versionList = gson.fromJson<List<AppVersion>>(jsonData,typeOf)
+        for(version in versionList){
+            if (version.version=="1.0")
+            {
+
+            }
+        }
+    }*/
+
+/*    private fun httpURLConnection() {
+        thread {
+            var connection:HttpsURLConnection ?= null
+
+            var response = StringBuilder()
+            val url = URL("https://raw.githubusercontent.com/Case-Closed-X/Android-Wallpaper-Application/ecf047dc0e396ccd0f9c0e85b0f134e7e63df06a/app/src/main/res/raw/wallpaper_version.json")
+            connection = url.openConnection() as HttpsURLConnection
+            connection.connectTimeout = 8000
+            connection.readTimeout = 8000
+            val input = connection.inputStream
+            val reader = BufferedReader(InputStreamReader(input))
+            reader.use {
+                reader.forEachLine {
+                    response.append(it)
+                }
+            }
+        }
+    }*/
 
     override fun onBindViewHolder(holder: AboutAdapter.ViewHolder, position: Int) {
         val aboutItem = aboutList[position]
@@ -162,6 +260,22 @@ class AboutAdapter(private val aboutList : List<AboutItem>,private val isAbout :
     }
 }
 
-class AboutItem (val imageId : Int, val title : String, val content : String){
+class AboutItem (val imageId : Int, val title : String, val content : String)
 
+class AppVersion(val version: String)
+
+interface VersionService{
+    @GET("wallpaper_version.json")
+    fun getVersionData():Call<List<AppVersion>>
+}
+
+object ServiceCreator{
+    private const val BASE_URL = "https://case-closed-x.github.io/Json/"
+    private val retrofit = Retrofit.Builder()
+        .baseUrl(BASE_URL)
+        .addConverterFactory(GsonConverterFactory.create())
+        .build()
+
+    fun <T> create(serviceClass: Class<T>):T = retrofit.create(serviceClass)
+    inline fun <reified T> create() : T = create(T::class.java)
 }

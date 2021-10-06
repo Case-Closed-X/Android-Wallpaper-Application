@@ -75,6 +75,17 @@ class RecyclerViewActivity : AppCompatActivity() {
         super.onDestroy()
     }
 
+    private fun initImages() {
+        imageList.add(ImageItem(R.drawable.space))
+        imageList.add(ImageItem(R.drawable.mountain))
+        imageList.add(ImageItem(R.drawable.aperture))
+        imageList.add(ImageItem(R.drawable.ship))
+        imageList.add(ImageItem(R.drawable.technology))
+        imageList.add(ImageItem(R.drawable.sky))
+        imageList.add(ImageItem(R.drawable.tree))
+        imageList.add(ImageItem(R.drawable.road))
+    }
+
     /*fun readBitmapFromResource(
         resources: Resources,
         resourcesId: Int,
@@ -99,15 +110,4 @@ class RecyclerViewActivity : AppCompatActivity() {
         options.inSampleSize = inSampleSize
         return BitmapFactory.decodeStream(ins, null, options)
     }*/
-
-    private fun initImages() {
-        imageList.add(ImageItem(R.drawable.space))
-        imageList.add(ImageItem(R.drawable.mountain))
-        imageList.add(ImageItem(R.drawable.aperture))
-        imageList.add(ImageItem(R.drawable.ship))
-        imageList.add(ImageItem(R.drawable.technology))
-        imageList.add(ImageItem(R.drawable.sky))
-        imageList.add(ImageItem(R.drawable.tree))
-        imageList.add(ImageItem(R.drawable.road))
-    }
 }
