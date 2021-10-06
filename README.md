@@ -10,7 +10,7 @@
 🌟效果图
 
 <div style="float:left;">
-<img src="https://github.com/Case-Closed-X/Android-Wallpaper-Application/blob/9e9f27cda0048790b34878f7e9e1f57967506604/images/main.jpg" width="270px" height="600px" />
-<img src="https://github.com/Case-Closed-X/Android-Wallpaper-Application/blob/9e9f27cda0048790b34878f7e9e1f57967506604/images/about.jpg" width="270px" height="600px" />
-<img src="https://github.com/Case-Closed-X/Android-Wallpaper-Application/blob/9e9f27cda0048790b34878f7e9e1f57967506604/images/set.jpg" width="270px" height="600px" />
+<img src="https://github.com/Case-Closed-X/Android-Wallpaper-Application/blob/fbb1f485ddc9804910339f9200a62f70d14e123b/images/main.jpg" width="270px" height="600px" />
+<img src="https://github.com/Case-Closed-X/Android-Wallpaper-Application/blob/fbb1f485ddc9804910339f9200a62f70d14e123b/images/about.jpg" width="270px" height="600px" />
+<img src="https://github.com/Case-Closed-X/Android-Wallpaper-Application/blob/fbb1f485ddc9804910339f9200a62f70d14e123b/images/set.jpg" width="270px" height="600px" />
 </div>
