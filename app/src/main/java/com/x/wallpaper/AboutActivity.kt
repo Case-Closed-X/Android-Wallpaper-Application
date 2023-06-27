@@ -1,14 +1,21 @@
 package com.x.wallpaper
 
 import android.annotation.SuppressLint
+import android.app.Activity
+import android.app.AlertDialog
+import android.app.WallpaperManager
+import android.content.Context
 import android.content.Intent
 import android.graphics.Color
+import android.graphics.RenderEffect
+import android.graphics.Shader
 import android.net.Uri
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.transition.Slide
 import android.view.*
+import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.RequiresApi
@@ -16,25 +23,13 @@ import androidx.cardview.widget.CardView
 import androidx.constraintlayout.utils.widget.ImageFilterView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
+import com.x.wallpaper.Utils.animateScaleSize
 import com.x.wallpaper.databinding.ActivityAboutBinding
-import okhttp3.OkHttpClient
-import okhttp3.Request
-import okhttp3.Response
-import okio.IOException
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
-import java.io.BufferedReader
-import java.io.InputStreamReader
-import java.lang.Exception
-import java.lang.StringBuilder
-import java.net.URL
-import javax.net.ssl.HttpsURLConnection
-import kotlin.concurrent.thread
 
 @RequiresApi(Build.VERSION_CODES.R)
 class AboutActivity : AppCompatActivity() {
@@ -52,13 +47,13 @@ class AboutActivity : AppCompatActivity() {
         aboutList.add(AboutItem(R.drawable.ico_outlook,"联系作者","给我的Outlook邮箱发送邮件"))
         aboutList.add(AboutItem(R.drawable.ico_qq,"个人主页","访问我的个人网站"))
 
-        firstList.add(AboutItem(R.drawable.ico_version,"关于","APP Version 1.0"))
+        firstList.add(AboutItem(R.drawable.ico_version,"关于","APP Version 1.1"))
     }
 
     @SuppressLint("ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
 
-        // 开启Material动画
+        //开启Material动画
         window.requestFeature(Window.FEATURE_ACTIVITY_TRANSITIONS)
         super.onCreate(savedInstanceState)
 
@@ -95,6 +90,7 @@ class AboutActivity : AppCompatActivity() {
         binding.recyclerViewAbout.layoutManager = layoutManager
         binding.recyclerViewFirst.layoutManager = LinearLayoutManager(this)
 
+        //binding.imageFilterViewSera.animateScaleSize()//不能用此方法，会导致丢失ACTION_UP，ACTION_CANCEL的后续处理
         binding.imageFilterViewSera.setOnTouchListener { v, event ->
             when (event.action) {
                 MotionEvent.ACTION_DOWN -> {
@@ -109,29 +105,28 @@ class AboutActivity : AppCompatActivity() {
             true
         }
     }
-}
 
-class AboutAdapter(private val aboutList : List<AboutItem>,private val isAbout : Boolean)
-    : RecyclerView.Adapter<AboutAdapter.ViewHolder>(){
+    inner class AboutAdapter(private val aboutList : List<AboutItem>,private val isAbout : Boolean)
+        : RecyclerView.Adapter<AboutAdapter.ViewHolder>(){
 
-    inner class ViewHolder(view : View) : RecyclerView.ViewHolder(view){
-        val image : ImageFilterView = view.findViewById(R.id.imageFilterViewAbout)
-        val title : TextView = view.findViewById(R.id.textViewAboutTitle)
-        val content : TextView = view.findViewById(R.id.textViewAboutContent)
-        val cardView : CardView = view.findViewById(R.id.cardViewAbout)
-    }
+        inner class ViewHolder(view : View) : RecyclerView.ViewHolder(view){
+            val image : ImageFilterView = view.findViewById(R.id.imageFilterViewAbout)
+            val title : TextView = view.findViewById(R.id.textViewAboutTitle)
+            val content : TextView = view.findViewById(R.id.textViewAboutContent)
+            val cardView : CardView = view.findViewById(R.id.cardViewAbout)
+        }
 
-    @SuppressLint("ClickableViewAccessibility")
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AboutAdapter.ViewHolder {
-        //待项目开源后，改变此处url为新项目的地址
-        val urlGithub =
-            "https://github.com/Case-Closed-X/Android-Wallpaper-Application"
-        val urlOutlook = "mailto:CaseClosedX@outlook.com"
-        val urlHomePage = "https://case-closed-x.github.io/"
+        @SuppressLint("ClickableViewAccessibility")
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AboutAdapter.ViewHolder {
+            //待项目开源后，改变此处url为新项目的地址
+            val urlGithub =
+                "https://github.com/Case-Closed-X/Android-Wallpaper-Application"
+            val urlOutlook = "mailto:CaseClosedX@outlook.com"
+            val urlHomePage = "https://case-closed-x.github.io/"
 
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.about_item,parent,false)
+            val view = LayoutInflater.from(parent.context).inflate(R.layout.about_item,parent,false)
 
-        val viewHolder = ViewHolder(view)
+            val viewHolder = ViewHolder(view)
 
             viewHolder.itemView.setOnTouchListener { v, event ->
                 val position = viewHolder.adapterPosition
@@ -153,50 +148,107 @@ class AboutAdapter(private val aboutList : List<AboutItem>,private val isAbout :
                         if (isAbout){
                             parent.context.startActivity(intent)
                         }
-                        else if (position == 0){// 使用网络获取版本，可以设置flag获取时无效点击
-                            // 获取成功打开github下载页面或者弹出对话框，直接创建下载任务
+                        else if (position == 0){//使用网络获取版本，可以设置flag获取时无效点击
+                            //获取成功打开github下载页面或者弹出对话框，直接创建下载任务
                             retrofit()
                         }
                     }
                 }
                 true
             }
+            return viewHolder
+        }
 
-        return viewHolder
-    }
+        private fun retrofit() {
+            val versionService = ServiceCreator.create<VersionService>()
+            versionService.getVersionData().enqueue(object : Callback<List<AppVersion>>{
+                override fun onResponse(
+                    call: Call<List<AppVersion>>,
+                    response: retrofit2.Response<List<AppVersion>>
+                ) {
+                    val list = response.body()
+                    if (list!=null){
+                        for (version in list){
+                            if (version.version == "1.1") {//记得更改
+                                Toast.makeText(MyApplication.context, "已经是最新版本", Toast.LENGTH_SHORT)
+                                    .show()
+                            }
+                            else{
+                                showUpdateDialog()
+                                /*val updateDialog = DialogUpdateActivity(this@AboutActivity, getString(R.string.dialog_update))
+                                updateDialog.show()*/
 
-    private fun retrofit() {
-        val versionService = ServiceCreator.create<VersionService>()
-        versionService.getVersionData().enqueue(object : Callback<List<AppVersion>>{
-            override fun onResponse(
-                call: Call<List<AppVersion>>,
-                response: retrofit2.Response<List<AppVersion>>
-            ) {
-                val list = response.body()
-                if (list!=null){
-                    for (version in list){
-                        if (version.version == "1.0") {
-                            Toast.makeText(MyApplication.context, "已经是最新版本", Toast.LENGTH_SHORT)
-                                .show()
-                        }
-                        else{
-                            Toast.makeText(MyApplication.context, "有新版本更新", Toast.LENGTH_SHORT)
-                                .show()
-                            val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/Case-Closed-X/Android-Wallpaper-Application/releases/"))
-                            MyApplication.context.startActivity(intent)
+                                /*var intent = Intent(MyApplication.context,DialogUpdateActivity::class.java)
+                                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                                MyApplication.context.startActivity(intent)*/
+
+                                /*AlertDialog.Builder(this@AboutActivity).apply {
+                                    setTitle(R.string.dialog_enable)
+                                    setMessage(R.string.dialog_update)
+                                    setIcon(R.drawable.update)
+                                    setCancelable(true)//Back键关闭对话框可用
+                                    setPositiveButton(R.string.ok) { dialog,which ->
+                                        val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/Case-Closed-X/Android-Wallpaper-Application/releases/"))
+                                        this@AboutActivity.startActivity(intent)
+                                    }
+                                    setNegativeButton(R.string.cancel,null)
+
+                                    show()
+                                }*/
+                                /*Toast.makeText(MyApplication.context, "有新版本更新", Toast.LENGTH_SHORT)
+                                    .show()*/
+                                /*val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/Case-Closed-X/Android-Wallpaper-Application/releases/"))
+                                MyApplication.context.startActivity(intent)*/
+                            }
                         }
                     }
                 }
+
+                override fun onFailure(call: Call<List<AppVersion>>, t: Throwable) {
+                    t.printStackTrace()
+                    Toast.makeText(MyApplication.context, "获取更新超时，请检查网络连接", Toast.LENGTH_SHORT)
+                        .show()
+                }
+            })
+        }
+
+        private fun showUpdateDialog() {
+            val dialogView: View = LayoutInflater.from(this@AboutActivity).inflate(R.layout.dialog_update, null)
+
+            var updateSelected = true
+
+            val imageUpdate = dialogView.findViewById<ImageFilterView>(R.id.dialog_imageFilterViewUpdate)
+            val buttonUpdate = dialogView.findViewById<Button>(R.id.dialog_buttonUpdate)
+            buttonUpdate.animateScaleSize()
+            imageUpdate.animateScaleSize()
+
+            imageUpdate.setOnClickListener {
+                if (!updateSelected) {
+                    imageUpdate.setBackgroundResource(R.color.white_80)
+                    buttonUpdate.text = getString(R.string.dialog_update)
+                }
+                else {
+                    imageUpdate.setBackgroundResource(R.color.white_50)
+                    buttonUpdate.text = getString(R.string.dialog_keep)
+                }
+                updateSelected = !updateSelected
             }
 
-            override fun onFailure(call: Call<List<AppVersion>>, t: Throwable) {
-                t.printStackTrace()
-                Toast.makeText(MyApplication.context, "获取更新超时，请检查网络连接", Toast.LENGTH_SHORT)
-                    .show()
-            }
-        })
+            val layoutDialog = AlertDialog.Builder(this@AboutActivity, R.style.TransparentDialog)
+            layoutDialog.setView(dialogView)
+            val dialog = layoutDialog.create()
 
-    }
+            //dialog.setCancelable(false)//Back键关闭对话框不可用，只能通过点击按钮返回
+
+            buttonUpdate.setOnClickListener { v: View? ->
+                if (updateSelected){
+                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/Case-Closed-X/Android-Wallpaper-Application/releases/"))
+                    this@AboutActivity.startActivity(intent)
+                }
+                dialog.dismiss()
+            }
+            dialog.show()
+        }
 
 /*    private fun okHttp() {
         thread {
@@ -248,15 +300,16 @@ class AboutAdapter(private val aboutList : List<AboutItem>,private val isAbout :
         }
     }*/
 
-    override fun onBindViewHolder(holder: AboutAdapter.ViewHolder, position: Int) {
-        val aboutItem = aboutList[position]
-        holder.image.setImageResource(aboutItem.imageId)
-        holder.title.text = aboutItem.title
-        holder.content.text = aboutItem.content
-    }
+        override fun onBindViewHolder(holder: AboutAdapter.ViewHolder, position: Int) {
+            val aboutItem = aboutList[position]
+            holder.image.setImageResource(aboutItem.imageId)
+            holder.title.text = aboutItem.title
+            holder.content.text = aboutItem.content
+        }
 
-    override fun getItemCount(): Int {
-        return aboutList.size
+        override fun getItemCount(): Int {
+            return aboutList.size
+        }
     }
 }
 

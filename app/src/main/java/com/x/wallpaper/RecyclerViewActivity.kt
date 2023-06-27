@@ -10,7 +10,11 @@ import android.graphics.BitmapFactory
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.Display
+import android.view.Window
+import android.view.WindowInsets
 import android.view.animation.DecelerateInterpolator
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.x.wallpaper.databinding.ActivityRecyclerViewBinding
@@ -70,12 +74,12 @@ class RecyclerViewActivity : AppCompatActivity() {
         }
     }
 
-    override fun onDestroy() {//返回键后居然能再次初始化，造成imageList呈指数增长
+    override fun onDestroy() {//解决返回键后再次初始化，造成imageList呈指数增长的bug
         imageList.clear()
         super.onDestroy()
     }
 
-    private fun initImages() {
+    private fun initImages() {//后续将改为从网络获取
         imageList.add(ImageItem(R.drawable.space))
         imageList.add(ImageItem(R.drawable.mountain))
         imageList.add(ImageItem(R.drawable.aperture))

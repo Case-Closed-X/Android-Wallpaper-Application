@@ -5,9 +5,20 @@
     <string name="wallpaper">壁纸</string>
 
     <string name="about">关于</string>
-    <string name="version">version 1.0</string>
+    <string name="version">version 1.1</string>
 
     <string name="about_shortcut_short_label">关于</string>
     <string name="about_shortcut_long_label">关于界面</string>
     <string name="about_disabled_message">调试中，暂时停用</string>
+
+    <string name="ok">确定</string>
+    <string name="cancel">取消</string>
+
+    <string name="dialog_setNothing">暂不设置壁纸</string>
+    <string name="dialog_setLock">设置锁屏壁纸</string>
+    <string name="dialog_setMain">设置主页壁纸</string>
+    <string name="dialog_setAll">设置主页和锁屏壁纸</string>
+
+    <string name="dialog_keep">暂不更新</string>
+    <string name="dialog_update">下载更新</string>
 </resources>

@@ -8,11 +8,17 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 
+    <color name="white_10">#1AFFFFFF</color>
     <color name="white_50">#80FFFFFF</color>
-    <color name="black_50">#80000000</color>
+    <color name="white_80">#CCFFFFFF</color>
     <color name="black_10">#1A000000</color>
+    <color name="black_50">#80000000</color>
+    <color name="black_80">#CC000000</color>
+
     <color name="blue">#2196F3</color>
     <color name="red">#E64A19</color>
 
     <color name="shadow">#80000000</color>
+
+    <color name="cancel">#F3F3F3</color>
 </resources>

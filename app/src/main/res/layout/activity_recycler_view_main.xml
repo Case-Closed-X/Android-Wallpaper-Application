@@ -7,7 +7,7 @@
     tools:context=".RecyclerViewActivity">
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/textViewMain"
         android:layout_width="wrap_content"
         android:layout_height="70dp"
         android:layout_marginTop="35dp"
@@ -20,18 +20,13 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerView"
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/viewPagerMain"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:alpha="0"
-        android:clipToPadding="false"
-        android:paddingStart="0dp"
-        android:paddingEnd="15dp"
-        android:paddingBottom="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView" />
-    <!--设置android:paddingBottom="10dp"底部留空，但设置android:clipToPadding="false"小白条才会透明-->
+        app:layout_constraintTop_toBottomOf="@+id/textViewMain" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

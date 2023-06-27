@@ -9,18 +9,25 @@
         <entry key="..\:/Files/Programs/AndroidStudioProjects/wallpaper/app/src/main/res/layout-w936dp/content_scrolling.xml" value="0.144140625" />
         <entry key="..\:/Files/Programs/AndroidStudioProjects/wallpaper/app/src/main/res/layout/about_item.xml" value="0.16666666666666666" />
         <entry key="..\:/Files/Programs/AndroidStudioProjects/wallpaper/app/src/main/res/layout/activity_about.xml" value="0.14666666666666667" />
-        <entry key="..\:/Files/Programs/AndroidStudioProjects/wallpaper/app/src/main/res/layout/activity_main.xml" value="0.22" />
+        <entry key="..\:/Files/Programs/AndroidStudioProjects/wallpaper/app/src/main/res/layout/activity_dialog_update.xml" value="0.14666666666666667" />
+        <entry key="..\:/Files/Programs/AndroidStudioProjects/wallpaper/app/src/main/res/layout/activity_main.xml" value="0.11480263157894736" />
         <entry key="..\:/Files/Programs/AndroidStudioProjects/wallpaper/app/src/main/res/layout/activity_recycler_view.xml" value="0.1921875" />
+        <entry key="..\:/Files/Programs/AndroidStudioProjects/wallpaper/app/src/main/res/layout/activity_recycler_view_main.xml" value="0.14725738396624471" />
         <entry key="..\:/Files/Programs/AndroidStudioProjects/wallpaper/app/src/main/res/layout/activity_view_pager.xml" value="0.15555555555555556" />
         <entry key="..\:/Files/Programs/AndroidStudioProjects/wallpaper/app/src/main/res/layout/content_scrolling.xml" value="0.12138157894736842" />
+        <entry key="..\:/Files/Programs/AndroidStudioProjects/wallpaper/app/src/main/res/layout/dialog_set.xml" value="0.16666666666666666" />
+        <entry key="..\:/Files/Programs/AndroidStudioProjects/wallpaper/app/src/main/res/layout/dialog_update.xml" value="0.11480263157894736" />
         <entry key="..\:/Files/Programs/AndroidStudioProjects/wallpaper/app/src/main/res/layout/image_item.xml" value="0.15555555555555556" />
         <entry key="..\:/Files/Programs/AndroidStudioProjects/wallpaper/app/src/main/res/layout/layout.xml" value="0.15555555555555556" />
+        <entry key="..\:/Files/Programs/AndroidStudioProjects/wallpaper/app/src/main/res/layout/main_item.xml" value="0.14725738396624471" />
         <entry key="..\:/Files/Programs/AndroidStudioProjects/wallpaper/app/src/main/res/layout/recycler_view_item.xml" value="0.16666666666666666" />
         <entry key="..\:/Files/Programs/AndroidStudioProjects/wallpaper/app/src/main/res/menu/menu_about.xml" value="0.22" />
+        <entry key="..\:/Files/Programs/AndroidStudioProjects/wallpaper/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.1237785016286645" />
+        <entry key="..\:/Files/Programs/AndroidStudioProjects/wallpaper/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.1237785016286645" />
       </map>
     </option>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="11" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_17" project-jdk-name="jbr-17" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>
   <component name="ProjectType">

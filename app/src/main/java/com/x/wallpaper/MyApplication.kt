@@ -12,6 +12,6 @@ class MyApplication : Application(){
 
     override fun onCreate() {
         super.onCreate()
-        context = applicationContext
+        context = applicationContext//获取全局context
     }
 }

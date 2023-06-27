@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.x.wallpaper" >
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.x.wallpaper">
 
     <uses-permission android:name="android.permission.SET_WALLPAPER" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -12,13 +13,19 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.Wallpaper" >
+        android:theme="@style/Theme.Wallpaper">
+        <!--<activity
+            android:name=".DialogUpdateActivity"
+            android:exported="true"
+            tools:ignore="Instantiatable" />-->
         <activity
             android:name=".AboutActivity"
-            android:exported="true" />
+            android:exported="true"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".RecyclerViewActivity"
-            android:exported="true" >
+            android:exported="true"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -30,11 +37,17 @@
                 android:resource="@xml/shortcuts" />
         </activity>
         <activity
+            android:name=".RecyclerViewActivityMain"
+            android:exported="true"
+            android:screenOrientation="portrait"/>
+        <activity
             android:name=".ViewPagerActivity"
-            android:exported="true" />
+            android:exported="true"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".MainActivity"
-            android:exported="true" />
+            android:exported="true"
+            android:screenOrientation="portrait"/>
     </application>
 
 </manifest>
